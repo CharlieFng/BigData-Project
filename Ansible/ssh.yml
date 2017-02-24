@@ -1,0 +1,146 @@
+# config non-password login
+- hosts: namenode:resourcemanager:master:kafka
+  tasks:
+    - name: generate key pair
+      shell: ssh-keygen -q -t rsa -f /home/ec2-user/.ssh/id_rsa -N ''
+      args:
+        creates: /home/ec2-user/.ssh/id_rsa
+    - name: create config file in directory
+      lineinfile: dest='/home/ec2-user/.ssh/config' state=present mode=0600
+                    create=yes insertafter=EOF line='{{item}}'
+      with_items:
+              - 'StrictHostKeyChecking no'
+              - 'UserKnownHostsFile /dev/null'
+
+
+
+- hosts: namenode01
+  tasks:
+    - name: get public key from namenode01, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/namenode01.pub flat=yes
+
+
+# copy public key to others
+- hosts: all:!control:!ssh
+  tasks:
+#    - name: create a tmp dir
+#      file: path='/home/ec2-user/.ssh/tmp/' state=directory
+#    - name: copy public key file from contral machine to remote hosts
+#      copy: src=/Users/charlie/.ssh/tmp/ssh01.pub dest=/home/ec2-user/.ssh/tmp/ssh01.pub
+#    - name: Add Pub key to authorized_key file
+#      shell: cat ./tmp/ssh01.pub >> authorized_keys
+#      args:
+#         chdir: /home/ec2-user/.ssh/
+
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/namenode01.pub')}}"
+
+
+
+- hosts: namenode02
+  tasks:
+    - name: get public key from namenode02, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/namenode02.pub flat=yes
+
+
+# copy public key to others
+- hosts: all:!control:!ssh
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/namenode02.pub')}}"
+
+
+
+
+
+- hosts: resourcemanager01
+  tasks:
+    - name: get public key from resourcemanager01, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/resourcemanager01.pub flat=yes
+
+
+# copy public key to others
+- hosts: resourcemanager:datanode:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/resourcemanager01.pub')}}"
+
+
+
+
+- hosts: master01
+  tasks:
+    - name: get public key from master01, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/master01.pub flat=yes
+
+
+# copy public key to others
+- hosts: master:namenode:datanode:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/master01.pub')}}"
+
+
+- hosts: master02
+  tasks:
+    - name: get public key from master02, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/master02.pub flat=yes
+
+
+# copy public key to others
+- hosts: master:namenode:datanode:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/master02.pub')}}"
+
+
+- hosts: master03
+  tasks:
+    - name: get public key from master03, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/master03.pub flat=yes
+
+
+# copy public key to others
+- hosts: master:namenode:datanode:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/master03.pub')}}"
+
+
+- hosts: kafka01
+  tasks:
+    - name: get public key from kafka01, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/kafka01.pub flat=yes
+
+
+# copy public key to others
+- hosts: kafka:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/kafka01.pub')}}"
+
+
+- hosts: kafka02
+  tasks:
+    - name: get public key from kafka02, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/kafka02.pub flat=yes
+
+
+# copy public key to others
+- hosts: kafka:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/kafka02.pub')}}"
+
+
+- hosts: kafka03
+  tasks:
+    - name: get public key from kafka03, record locally
+      fetch: src=/home/ec2-user/.ssh/id_rsa.pub dest=/Users/charlie/.ssh/tmp/kafka03.pub flat=yes
+
+
+# copy public key to others
+- hosts: kafka:zookeeper
+  tasks:
+    - name: Add Pub key
+      authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/kafka03.pub')}}"

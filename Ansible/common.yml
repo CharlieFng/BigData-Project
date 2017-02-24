@@ -1,0 +1,49 @@
+---
+  - hosts: all:!control:!ssh
+    roles:
+      - common
+
+  - hosts: namenode01
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=namenode01
+
+
+  - hosts: namenode02
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=namenode02
+
+
+  - hosts: resourcemanager01
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=resourcemanager01
+
+  - hosts: resourcemanager02
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=resourcemanager02
+
+
+  - hosts: datanode01
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=datanode01
+
+  - hosts: datanode02
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=datanode02
+
+  - hosts: datanode03
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=datanode03

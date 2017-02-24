@@ -1,0 +1,50 @@
+---
+# tasks file for spark
+
+
+- name: Download Scala from Dropbox
+  get_url: url={{scala_url}} dest={{download_folder}}
+
+
+
+- name: unpackage Scala into specific folder
+  unarchive: src={{scala_archive}} dest={{app_folder}} copy=no
+
+
+- name: add Scala path to system environment
+  lineinfile: dest=/etc/profile
+              line='{{item}}'
+  with_items:
+          - 'export SCALA_HOME={{app_folder}}/scala-2.10.4'
+          - 'export PATH=$PATH:$SCALA_HOME/bin'
+  become: true
+  notify: refresh system config file
+
+
+
+
+- name: Download Spark from Dropbox
+  get_url: url={{spark_url}} dest={{download_folder}}
+
+
+- name: unpackage Spark into specific folder
+  unarchive: src={{spark_archive}} dest={{app_folder}} copy=no
+
+
+- name: add Spark path to system environment
+  lineinfile: dest=/etc/profile
+              line='{{item}}'
+  with_items:
+          - 'export SPARK_HOME={{app_folder}}/spark-1.6.3-bin-hadoop2.4'
+          - 'export PATH=$PATH:$SPARK_HOME/bin'
+  become: true
+  notify: refresh system config file
+
+
+
+- name: modify configuration file
+  copy: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - {src: spark-env.sh, dest: '{{app_folder}}/spark-1.6.3-bin-hadoop2.4/conf/spark-env.sh' }
+    - {src: slaves, dest: '{{app_folder}}/spark-1.6.3-bin-hadoop2.4/conf/slaves' }
+    - {src: log4j.properties, dest: '{{app_folder}}/spark-1.6.3-bin-hadoop2.4/conf/log4j.properties' }

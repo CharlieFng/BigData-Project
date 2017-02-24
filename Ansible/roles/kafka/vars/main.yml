@@ -1,0 +1,17 @@
+---
+# vars file for kafka
+
+download_folder: /home/ec2-user/downloads
+app_folder: /home/ec2-user/apps
+
+
+java_url: https://dl.dropboxusercontent.com/s/603kscozdt2q6u6/jdk-7u80-linux-x64.tar.gz?dl=0
+java_archive: "{{download_folder}}/jdk-7u80-linux-x64.tar.gz"
+
+
+scala_url: https://dl.dropboxusercontent.com/s/hu5gehm5d74fhi7/scala-2.10.4.tgz?dl=0
+scala_archive: "{{download_folder}}/scala-2.10.4.tgz"
+
+
+kafka_url: https://dl.dropboxusercontent.com/s/0c5nvisyevwz6it/kafka_2.10-0.10.1.0.tar?dl=0
+kafka_archive: "{{download_folder}}/kafka_2.10-0.10.1.0.tar"

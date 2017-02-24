@@ -1,0 +1,17 @@
+---
+# vars file for spark
+
+download_folder: /home/ec2-user/downloads
+app_folder: /home/ec2-user/apps
+
+
+java_url: https://dl.dropboxusercontent.com/s/603kscozdt2q6u6/jdk-7u80-linux-x64.tar.gz?dl=0
+java_archive: "{{download_folder}}/jdk-7u80-linux-x64.tar.gz"
+
+
+scala_url: https://dl.dropboxusercontent.com/s/hu5gehm5d74fhi7/scala-2.10.4.tgz?dl=0
+scala_archive: "{{download_folder}}/scala-2.10.4.tgz"
+
+
+spark_url: https://dl.dropboxusercontent.com/s/y5zd0ez6m9izjnx/spark-1.6.3-bin-hadoop2.4.tar?dl=0
+spark_archive: "{{download_folder}}/spark-1.6.3-bin-hadoop2.4.tar"

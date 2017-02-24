@@ -1,0 +1,46 @@
+---
+# tasks file for kafka
+
+- name: Download Scala from Dropbox
+  get_url: url={{scala_url}} dest={{download_folder}}
+
+
+
+- name: unpackage Scala into specific folder
+  unarchive: src={{scala_archive}} dest={{app_folder}} copy=no
+
+
+- name: add Scala path to system environment
+  lineinfile: dest=/etc/profile
+              line='{{item}}'
+  with_items:
+          - 'export SCALA_HOME={{app_folder}}/scala-2.10.4'
+          - 'export PATH=$PATH:$SCALA_HOME/bin'
+  become: true
+  notify: refresh system config file
+
+
+
+
+- name: Download Kafka from Dropbox
+  get_url: url={{kafka_url}} dest={{download_folder}}
+
+
+- name: unpackage Kafka into specific folder
+  unarchive: src={{kafka_archive}} dest={{app_folder}} copy=no
+
+
+- name: add Kafka path to system environment
+  lineinfile: dest=/etc/profile
+              line='{{item}}'
+  with_items:
+          - 'export Kafka_HOME={{app_folder}}/kafka_2.10-0.10.1.0'
+          - 'export PATH=$PATH:$Kafka_HOME/bin'
+  become: true
+  notify: refresh system config file
+
+
+- name: modify configuration file
+  copy: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+    - {src: server.properties, dest: '{{app_folder}}/kafka_2.10-0.10.1.0/config/server.properties' }

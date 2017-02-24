@@ -1,0 +1,16 @@
+---
+# vars file for zookeeper
+download_folder: /home/ec2-user/downloads
+app_folder: /home/ec2-user/apps
+zookeeper_dir: 'app_folder/zookeeper-3.4.5/tmp'
+
+java_url: https://dl.dropboxusercontent.com/s/603kscozdt2q6u6/jdk-7u80-linux-x64.tar.gz?dl=0
+java_archive: "{{download_folder}}/jdk-7u80-linux-x64.tar.gz"
+
+
+hadoop_url: https://dl.dropboxusercontent.com/s/g46t1lu50sh4a0u/hadoop-2.4.1.tar.gz?dl=0
+hadoop_archive: "{{download_folder}}/hadoop-2.4.1.tar.gz"
+
+
+zookeeper_url : https://dl.dropboxusercontent.com/s/2joyhwk4wbtw6aq/zookeeper-3.4.5.tar?dl=0
+zookeeper_archive: "{{download_folder}}/zookeeper-3.4.5.tar"

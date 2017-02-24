@@ -1,0 +1,31 @@
+---
+# tasks file for control
+- name: create config file in directory
+  lineinfile: dest='~/.ssh/configs' state=present mode=0600
+              create=yes insertafter=EOF line='{{item}}'
+  with_items:
+            - 'StrictHostKeyChecking no'
+            - 'UserKnownHostsFile /dev/null'
+
+
+- name: add the mapping of hostname and ip address of whole cluster into local system environment
+  lineinfile: dest=/etc/hosts
+              line='{{item}}'
+  with_items:
+          - '115.146.91.128 namenode01'
+          - '115.146.89.154 namenode02'
+          - '115.146.91.170 resourcemanager01'
+          - '115.146.91.179 resourcemanager02'
+          - '115.146.91.187 datanode01'
+          - '115.146.92.214 datanode02'
+          - '115.146.91.198 datanode03'
+          - '115.146.92.219 zookeeper01'
+          - '115.146.91.20  zookeeper02'
+          - '115.146.91.203 zookeeper03'
+          - '115.146.87.167 master01'
+          - '115.146.87.168 master02'
+          - '115.146.95.150 master03'
+          - '115.146.95.2   kafka01'
+          - '115.146.95.20  kafka02'
+          - '115.146.95.200 kafka03'
+  become: true

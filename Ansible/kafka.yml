@@ -1,0 +1,44 @@
+---
+  - hosts: kafka
+    roles:
+      - kafka
+
+
+  - hosts: kafka01
+    vars:
+      app_folder : /home/ec2-user/apps
+    tasks:
+      - name: modify hostname
+        hostname: name=kafka01
+        become: true
+
+      - name: initiate a broker number in config file
+        replace: dest='{{app_folder}}/kafka_2.10-0.10.1.0/config/server.properties'
+                 regexp='^broker.*'
+                 replace='broker.id=1'
+
+  - hosts: kafka02
+    vars:
+      app_folder : /home/ec2-user/apps
+    tasks:
+      - name: modify hostname
+        hostname: name=kafka02
+        become: true
+
+      - name: initiate a broker number in config file
+        replace: dest='{{app_folder}}/kafka_2.10-0.10.1.0/config/server.properties'
+                 regexp='^broker.*'
+                 replace='broker.id=2'
+
+  - hosts: kafka03
+    vars:
+      app_folder : /home/ec2-user/apps
+    tasks:
+      - name: modify hostname
+        hostname: name=kafka03
+        become: true
+
+      - name: initiate a broker number in config file
+        replace: dest='{{app_folder}}/kafka_2.10-0.10.1.0/config/server.properties'
+                 regexp='^broker.*'
+                 replace='broker.id=3'

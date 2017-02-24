@@ -1,0 +1,23 @@
+---
+  - hosts: master:datanode
+    roles:
+      - spark
+
+
+  - hosts: master01
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=master01
+
+  - hosts: master02
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=master02
+
+  - hosts: master03
+    become: true
+    tasks:
+      - name: modify hostname
+        hostname: name=master03

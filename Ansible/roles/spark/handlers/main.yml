@@ -1,0 +1,4 @@
+---
+# handlers file for spark
+- name: refresh system config file
+  shell: . /etc/profile

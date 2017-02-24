@@ -1,0 +1,6 @@
+---
+  - include: common.yml
+  - include: zookeeper.yml
+  - include: spark.yml
+  - include: kafka.yml
+  - include: ssh.yml

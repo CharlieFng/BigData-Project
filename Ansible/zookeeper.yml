@@ -1,0 +1,42 @@
+---
+- hosts: zookeeper
+  roles:
+    - zookeeper
+# each zookeeper node tounch a file to record its number
+- hosts: zookeeper01
+  vars:
+    app_folder : /home/ec2-user/apps
+  tasks:
+    - name: initiate a number in myid file
+      lineinfile: dest='{{app_folder}}/zookeeper-3.4.5/tmp/myid' state=present
+                  create=yes insertafter=EOF line='1'
+
+    - name: modify hostname
+      hostname: name=zookeeper01
+      become: true
+
+
+
+- hosts: zookeeper02
+  vars:
+    app_folder : /home/ec2-user/apps
+  tasks:
+    - name: initiate a number in myid file
+      lineinfile: dest='{{app_folder}}/zookeeper-3.4.5/tmp/myid' state=present
+                  create=yes insertafter=EOF line='2'
+
+    - name: modify hostname
+      hostname: name=zookeeper02
+      become: true
+
+- hosts: zookeeper03
+  vars:
+    app_folder : /home/ec2-user/apps
+  tasks:
+    - name: initiate a number in myid file
+      lineinfile: dest='{{app_folder}}/zookeeper-3.4.5/tmp/myid' state=present
+                  create=yes insertafter=EOF line='3'
+
+    - name: modify hostname
+      hostname: name=zookeeper03 
+      become: true

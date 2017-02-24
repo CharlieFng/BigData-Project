@@ -1,0 +1,40 @@
+---
+# tasks file for zookeeper
+
+- name: Download Zookeeper from Dropbox
+  get_url: url={{zookeeper_url}} dest={{download_folder}}
+
+
+- name: unpackage Zookeeper into specific folder
+  unarchive: src={{zookeeper_archive}} dest={{app_folder}} copy=no
+
+
+- name: add Zookeeper path to system environment
+  lineinfile: dest=/etc/profile line='{{item}}'
+  with_items:
+          - 'export ZOOKEEPER_HOME={{app_folder}}/zookeeper-3.4.5'
+          - 'export PATH=$PATH:$ZOOKEEPER_HOME/bin'
+  become: true
+  notify: refresh system config file
+
+
+
+# modify the configuration file
+- name: copy a duplicate file of zoo_sample.cfg
+  command: cp zoo_sample.cfg zoo.cfg
+           chdir='{{app_folder}}/zookeeper-3.4.5/conf'
+
+
+- name: modify configuration file
+  copy: src='{{item.src}}' dest='{{item.dest}}'
+  with_items:
+     - {src: zoo.cfg, dest: '{{app_folder}}/zookeeper-3.4.5/conf/zoo.cfg' }
+
+
+
+- name: create a working directory for zookeeper
+  file: path='{{app_folder}}/zookeeper-3.4.5/tmp' state=directory
+
+
+- name: create a log directory for zookeeper
+  file: path='{{app_folder}}/zookeeper-3.4.5/logs' state=directory

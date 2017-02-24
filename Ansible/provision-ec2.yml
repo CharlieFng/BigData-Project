@@ -1,0 +1,32 @@
+---
+  - name: Provision an EC2 Instance
+    hosts: control
+    gather_facts: False
+    vars:
+      aws_access_key: 9b71891ffb834e7fa1f710564ae41f07
+      aws_secret_key: fed95873a5214b128f2ba969186d9939
+      instance_type: m1.medium
+      security_group: BigData # Change the security group name here
+      image: ami-00003720 # This is an AMI i created myself
+      key_name: BigData # This is one of my keys that i already have in AWS
+      ec2_url: https://nova.rc.nectar.org.au:8773/services/Cloud
+      zone: melbourne-np
+      count: 1
+
+    tasks:
+      - name: Create an instance
+        ec2:
+          aws_access_key: "{{aws_access_key}}"
+          aws_secret_key: "{{aws_secret_key}}"
+          ec2_url:  "{{ec2_url}}"
+          zone: "{{zone}}"
+          group: "{{security_group}}"
+          key_name: "{{key_name}}"
+          instance_type: "{{instance_type}}"
+          image: "{{image}}"
+          count: "{{count}}"
+          validate_certs: no
+          wait: True
+          instance_tags:
+            Name: Test
+        register: ec2
