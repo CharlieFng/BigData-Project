@@ -1,5 +1,5 @@
 ---
-  - hosts: all:!control:!ssh
+  - hosts: all:!control
     roles:
       - common
 

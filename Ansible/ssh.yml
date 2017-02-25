@@ -21,7 +21,7 @@
 
 
 # copy public key to others
-- hosts: all:!control:!ssh
+- hosts: all:!control
   tasks:
 #    - name: create a tmp dir
 #      file: path='/home/ec2-user/.ssh/tmp/' state=directory
@@ -44,7 +44,7 @@
 
 
 # copy public key to others
-- hosts: all:!control:!ssh
+- hosts: all:!control
   tasks:
     - name: Add Pub key
       authorized_key: user=ec2-user key="{{ lookup('file', '/Users/charlie/.ssh/tmp/namenode02.pub')}}"

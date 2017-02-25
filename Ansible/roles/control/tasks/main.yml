@@ -1,13 +1,5 @@
 ---
 # tasks file for control
-- name: create config file in directory
-  lineinfile: dest='~/.ssh/configs' state=present mode=0600
-              create=yes insertafter=EOF line='{{item}}'
-  with_items:
-            - 'StrictHostKeyChecking no'
-            - 'UserKnownHostsFile /dev/null'
-
-
 - name: add the mapping of hostname and ip address of whole cluster into local system environment
   lineinfile: dest=/etc/hosts
               line='{{item}}'
@@ -29,3 +21,15 @@
           - '115.146.95.20  kafka02'
           - '115.146.95.200 kafka03'
   become: true
+
+
+- name: create config file in directory
+  lineinfile: dest='~/.ssh/config' state=present mode=0600
+              create=yes insertafter=EOF line='{{item}}'
+  with_items:
+            - 'StrictHostKeyChecking no'
+            - 'UserKnownHostsFile /dev/null'
+
+
+- name: create a tmp directory to store public key of VMs
+  file: path='~/.ssh/tmp/' state=directory

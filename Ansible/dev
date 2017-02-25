@@ -36,11 +36,3 @@ kafka03
 
 [control]
 localhost ansible_connection=local
-
-[webserver]
-
-
-
-[ssh]
-ssh01
-ssh02
