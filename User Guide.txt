@@ -1,0 +1,159 @@
+Hadoop version : 2.4.1
+Spark version: 1.6
+Zookeeper version: 3.4
+Kafka version: 2.10
+Linux VM: CentOS 7
+
+Step1 : Environment Setup
+
+	Local control machine:
+
+	 	#install Ansible, Boto package using pip 
+
+		pip install ansible 
+		pip install boto
+
+		#generate SSH key pair (if not exist)
+
+		ssh-keygen -t rsa
+
+	
+	Cloud Platform:
+
+		 #You can use Ansible script like provision-ec2.yml to setup the environment. However, considering Cloud Module of Ansible is not very stable, there exists some bugs, thus strongly recommend setup cloud environment manually. 
+
+		 #create a keypair by importing local machine's public key
+
+		 #create a security group including the rules
+		 	Rule: TCP
+		 	Direction: Ingress
+		 	Port: 22, 80, 2181, 8088, 9092, 50070
+		 	Remote: CIDR
+		 	CIDR: 0.0.0.0/0
+
+		 #Launch a number of virtual machines using the keypair and security group created before
+
+		 	Instance Boot Source: Boot from image
+		 	Type of Image: CentOS 7 x86_64 (Recommended)
+		 	Flavour: RAM > 2G ,  Disk > 120G (Recommended)
+
+		 	Instance number and name (hostname):
+		 		For Hadoop cluster:
+		 			2 namenode: namenode01, namenode02                       (namenode01 is hostname)
+		 			3 or more datanode: datanode01, datanode02, datanode03 ....
+		 			2 resourcemanager: resourcemanager01, resourcemanager02
+		 			(nodemanager share the same VMs with datanode)       
+
+		 		For Spark Cluster:
+		 			2 or more master: master01, master02...
+		 			(worker share the same VMs with datanode)
+
+		 		For Zookeeper Cluster:
+		 			3 VMs : zookeeper01, zookeeper02, zookeeper03..
+
+
+		 		For Kafka Cluster:
+		 			3 VMs: kafka01, kafka02, kafka03
+
+		 	Totally, more than 15 VMs.
+
+
+		 #Test ssh connection from local machine to cloud virtual machines
+
+		 	e.g.  ssh -i ~/.ssh/id_rsa ec2-user@namenode01
+
+
+
+Step2: Application Deployment
+	
+	# Modify the mappings in Ansible script
+
+	  File Location: BigData Project/Ansible/roles/common/tasks/main.yml  (For each VMs)
+	  				 BigData Project/Ansible/roles/control/tasks/main.yml  (For local machine)
+
+	                 For the first task in these two files,replace the ip address of each mapping
+
+	# If you have more than 3 datanodes, than add hostname of other datanodes in the following file
+
+	  BigData Project/Ansible/dev                   ([datanode] group) 
+
+	  BigData Project/Ansible/roles/common/file/slaves
+
+	  BigData Project/Ansible/roles/spark/file/slaves
+
+
+
+	 # Execute Ansible scirpt on local machine
+
+	   open terminal, cd to Ansbile directory:  cd path/BigData\ Project/Ansible
+
+	   execute command : ansible-playbook  --ask-sudo-pass site.yml
+
+	   Enter the password for local machine, then wait until script finish
+
+
+	
+
+Step 3: Start Cluster
+
+	 # To start the cluster service, you need to enter the following commands on different VMs orderly.
+	 1. start zookeeper cluster
+
+	 	On zookeeper01, zookeeper02, zookeeper03, execute following two commands respectively:
+
+	    	zkServer.sh start
+
+	    	hadoop-daemon.sh start journalnode
+
+
+	 2. Format HDFS
+
+	 	On namenode01, execute following three commands:
+
+	 		hdfs namenode -format
+
+	 		scp -r ~/apps/hadoop-2.4.1/tmp/ namenode02:/home/ec2-user/apps/hadoop-2.4.1/
+
+	 		hdfs zkfc -formatZK
+
+
+	 3. Start HDFS and YARN
+
+	 	On namenode01, execute following two commands:
+
+	 		start-dfs.sh
+
+	 		start-yarn.sh
+
+
+	 4. Start Spark cluster
+
+
+	 	On master01, execute following two commands:
+
+	 		cd ~/apps/spark-1.6.3-bin-hadoop2.4/
+
+	 		./sbin/start-all.sh
+
+
+Step 4: Monitor Cluster State
+
+	 On the local machine, type following url in browser to monitor cluster state
+	 
+	 HDFS: http://namenode01:50070
+
+	 YARN: http://resourcemanager01:8088
+
+	 Spark: http://master01:8080
+
+
+	 Success!!!
+
+
+
+
+
+
+
+
+
